@@ -652,7 +652,19 @@ function updateProgress() {
   document.getElementById('progressFill').style.width = pct+'%';
   document.getElementById('stepLabel').textContent = (currentSection+1)+' / '+sections.length;
 }
-
+function renderInPlace() {
+  const sec = sections[currentSection];
+  sec.questions.forEach(q => {
+    if (q.type === 'single') {
+      q.options.forEach((opt, i) => {
+        const btns = document.querySelectorAll(`button[onclick="selectOption('${q.id}',${i})"]`);
+        btns.forEach(btn => {
+          btn.className = 'option-btn' + (answers[q.id] === i ? ' selected' : '');
+        });
+      });
+    }
+  });
+}
 function render() {
   const root = document.getElementById('quiz-root');
   updateProgress();
@@ -703,7 +715,7 @@ function render() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function selectOption(qid,idx) { answers[qid]=idx; render(); }
+function selectOption(qid,idx) { answers[qid]=idx; renderInPlace(); }
 function goBack() { if(currentSection>0){currentSection--;render();} }
 
 function goNext() {
